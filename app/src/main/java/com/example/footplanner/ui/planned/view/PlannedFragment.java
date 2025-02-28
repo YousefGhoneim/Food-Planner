@@ -51,7 +51,6 @@ public class PlannedFragment extends Fragment implements PlannedView {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ProductLocalDataSource localDataSource = ProductLocalDataSource.getInstance(getContext());
         presenter = new PlannedPresenter(MealRepo.getInstance(ProductLocalDataSource.getInstance(getContext()), ProductRemoteDataSource.getInstance(getContext())),this  , requireActivity());
 
         mealsByDay = new HashMap<>();

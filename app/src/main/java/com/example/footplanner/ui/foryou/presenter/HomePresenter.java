@@ -42,7 +42,6 @@ public class HomePresenter {
             Log.e("DEBUG", "homeView is NULL!");
             return;
         }
-
         disposables.add(
                 mealRepo.getMealByDate(userId, date)
                         .subscribeOn(Schedulers.io())
@@ -138,6 +137,20 @@ public class HomePresenter {
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(() -> homeView.onMealDeleted(), throwable -> homeView.showError(throwable.getMessage()))
+        );
+    }
+    public void toggleMealFavouriteStatus(Meal meal) {
+        disposables.add(
+                mealRepo.toggleMealFavouriteStatus(meal , userId)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                () -> {
+                                    // Notify the view that the operation was successful
+                                    homeView.showError("Meal favourite status updated!");
+                                },
+                                throwable -> homeView.showError("Failed to update favourite status: " + throwable.getMessage())
+                        )
         );
     }
 }

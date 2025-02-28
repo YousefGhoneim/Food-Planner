@@ -53,5 +53,7 @@ public interface MealDao {
             ") ORDER BY date DESC LIMIT 10)")
     Completable enforceCacheLimit(String userId);
 
+    @Query("UPDATE meal SET isFavourite = :isFavourite WHERE mealId = :mealId AND userId = :userId")
+    Completable updateMealFavouriteStatus(String mealId, String userId, boolean isFavourite);
 
 }

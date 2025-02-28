@@ -17,6 +17,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.footplanner.R;
 import com.example.footplanner.db.MealModel;
 import com.example.footplanner.model.Meal;
+import com.example.footplanner.ui.favourite.presenter.OnMealFavouriteListener;
 import com.example.footplanner.ui.planned.presenter.OnMealPlannedListener;
 import com.example.footplanner.ui.planned.presenter.PlannedView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -32,11 +33,14 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     private static final String TAG = "RecipeAdapter";
 
     private OnMealPlannedListener onMealPlannedListener; // Callback interface
+    private OnMealFavouriteListener onMealFavouriteListener;
 
-    public RecipeAdapter(Context context, List<MealModel> mealsList , OnMealPlannedListener listener) {
+    public RecipeAdapter(Context context, List<MealModel> mealsList , OnMealPlannedListener listener , OnMealFavouriteListener favouriteListener) {
         this.context = context;
         this.mealsList = mealsList;
         this.onMealPlannedListener = listener;
+        this.onMealFavouriteListener = favouriteListener;
+
     }
 
     @NonNull
@@ -70,6 +74,12 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             Meal plannedMeal = mealModel.getMeal();
             showDatePicker(plannedMeal, holder);
         });
+        holder.floatingActionButtonFav.setOnClickListener(v -> {
+            if (mealModel != null) {
+                toggleMealFavouriteStatus(mealModel, holder);
+            }
+        });
+
     }
 
     @Override
@@ -103,11 +113,11 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                     maxDate.add(Calendar.DAY_OF_MONTH, 7);
 
                     if (selectedDate.before(Calendar.getInstance()) || selectedDate.after(maxDate)) {
-                        holder.floatingActionButtonFav.setImageResource(R.drawable.bookmarkadd);
+                        holder.floatingActionButtonMealPlan.setImageResource(R.drawable.baseline_add_24);
                         Toast.makeText(context, "Please select a date within the next 7 days.", Toast.LENGTH_SHORT).show();
                     } else {
                         long dateMillis = selectedDate.getTimeInMillis();
-                        holder.floatingActionButtonFav.setImageResource(R.drawable.bookmarkadded);
+                        holder.floatingActionButtonMealPlan.setImageResource(R.drawable.baseline_remove_24);
 
                         // Pass data to the View layer (Fragment or Activity)
                         if (onMealPlannedListener != null) {
@@ -127,6 +137,17 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
         datePickerDialog.show();
     }
-
+    private void toggleMealFavouriteStatus(MealModel mealModel, ViewHolder holder) {
+        if (mealModel.isFavourite()) {
+            mealModel.setFavourite(false);
+            holder.floatingActionButtonFav.setImageResource(R.drawable.bookmarkadd);
+        } else  {
+            mealModel.setFavourite(true);
+            holder.floatingActionButtonFav.setImageResource(R.drawable.baseline_favorite_24);
+        }
+        if (onMealFavouriteListener != null) {
+            onMealFavouriteListener.onMealFavouriteClicked(mealModel.getMeal());
+        }
+    }
 
 }

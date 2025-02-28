@@ -1,4 +1,4 @@
-package com.example.footplanner.ui.search;
+package com.example.footplanner.ui.search.view;
 
 import android.os.Bundle;
 

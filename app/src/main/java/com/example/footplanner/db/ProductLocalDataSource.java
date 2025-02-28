@@ -121,4 +121,38 @@ public class ProductLocalDataSource {
         );
         return mealDao.insertMeal(mealModel);
     }
+
+    public Completable addMealToFavorites(Meal meal , String userId , boolean isFavourite) {
+        MealModel mealModel = new MealModel(
+                meal.getIdMeal(),
+                userId,
+                System.currentTimeMillis(),
+                false,
+                isFavourite,
+                meal
+        );
+        return mealDao.insertMeal(mealModel);
+    }
+    public Completable toggleMealFavouriteStatus(Meal meal, String userId) {
+        return mealDao.getMealById(meal.getIdMeal(), userId)
+                .flatMapCompletable(existingMeal -> {
+                    // Toggle the isFavourite flag
+                    boolean newFavouriteStatus = !existingMeal.isFavourite();
+                    return mealDao.updateMealFavouriteStatus(meal.getIdMeal(), userId, newFavouriteStatus);
+                })
+                .onErrorResumeNext(error -> {
+                    // If the meal doesn't exist, insert it with isFavourite = true
+                    MealModel newMeal = new MealModel(
+                            meal.getIdMeal(),
+                            userId,
+                            System.currentTimeMillis(), // Use current time as the date
+                            false, // isPlanned
+                            true, // isFavourite
+                            meal
+                    );
+                    return mealDao.insertMeal(newMeal);
+                })
+                .subscribeOn(Schedulers.io());
+    }
+
 }

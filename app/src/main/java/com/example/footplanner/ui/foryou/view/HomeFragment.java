@@ -20,6 +20,7 @@ import com.example.footplanner.db.ProductLocalDataSource;
 import com.example.footplanner.model.Meal;
 import com.example.footplanner.network.ProductRemoteDataSource;
 import com.example.footplanner.repo.MealRepo;
+import com.example.footplanner.ui.favourite.presenter.OnMealFavouriteListener;
 import com.example.footplanner.ui.foryou.presenter.HomePresenter;
 import com.example.footplanner.ui.foryou.presenter.HomeView;
 import com.example.footplanner.ui.planned.presenter.OnMealPlannedListener;
@@ -29,7 +30,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class HomeFragment extends Fragment implements HomeView , OnMealPlannedListener {
+public class HomeFragment extends Fragment implements HomeView , OnMealPlannedListener , OnMealFavouriteListener {
 
     private HomePresenter homePresenter;
     private RecipeAdapter recipeAdapter;
@@ -65,7 +66,7 @@ public class HomeFragment extends Fragment implements HomeView , OnMealPlannedLi
         dailyRecyclerView.setHasFixedSize(true);
         dailyRecyclerView.setAlpha(true);
         dailyRecyclerView.setInfinite(true);
-        dailyMealAdapter = new RecipeAdapter(getContext(), dailyMealList,this);
+        dailyMealAdapter = new RecipeAdapter(getContext(), dailyMealList,this,this);
         dailyRecyclerView.setAdapter(dailyMealAdapter);
 
         // Recommended Meals RecyclerView setup
@@ -73,7 +74,7 @@ public class HomeFragment extends Fragment implements HomeView , OnMealPlannedLi
         recommendedMealsRecyclerView.setHasFixedSize(true);
         recommendedMealsRecyclerView.setAlpha(true);
         recommendedMealsRecyclerView.setInfinite(true);
-        recipeAdapter = new RecipeAdapter(getContext(), recommendedMealsList,this);
+        recipeAdapter = new RecipeAdapter(getContext(), recommendedMealsList,this ,this);
         recommendedMealsRecyclerView.setAdapter(recipeAdapter);
 
         homePresenter = new HomePresenter(
@@ -145,4 +146,8 @@ public class HomeFragment extends Fragment implements HomeView , OnMealPlannedLi
         Toast.makeText(getContext(), "Meal planned for " + new Date(dateMillis).toString(), Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void onMealFavouriteClicked(Meal meal) {
+        homePresenter.toggleMealFavouriteStatus(meal);
+    }
 }

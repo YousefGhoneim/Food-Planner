@@ -7,6 +7,7 @@ import com.example.footplanner.db.ProductLocalDataSource;
 import com.example.footplanner.model.Meal;
 import com.example.footplanner.network.ProductRemoteDataSource;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -33,7 +34,6 @@ public class MealRepo {
         return repo;
     }
 
-    //  Get Meal by ID (First check local, then remote)
     public Single<MealModel> getMealById(String userId, String mealId) {
         return localDataSource.getMealById(userId, mealId)
                 .onErrorResumeNext(error -> remoteDataSource.getMealById(userId, mealId)
@@ -59,7 +59,16 @@ public class MealRepo {
 
     public Single<List<MealModel>> getMealByDate(String userId, long date) {
         return localDataSource.getMealsByDate(userId, date)
-                .subscribeOn(Schedulers.io());
+                .subscribeOn(Schedulers.io())
+                .flatMap(mealModels -> {
+                    List<MealModel> plannedMeals = new ArrayList<>();
+                    for (MealModel meal : mealModels) {
+                        if (meal.isPlanned()) {
+                            plannedMeals.add(meal);
+                        }
+                    }
+                    return Single.just(plannedMeals);
+                });
     }
 
     public Single<List<MealModel>> getRandomMealForToday(String userId, long date) {
@@ -127,4 +136,11 @@ public class MealRepo {
     public Completable planMeal(String userId, Meal meal, long dateMillis) {
         return localDataSource.planMeal(userId, meal, dateMillis); // Pass Meal & dateMillis
     }
+
+    public Completable toggleMealFavouriteStatus(Meal meal, String userId) {
+        return localDataSource.toggleMealFavouriteStatus(meal, userId)
+                .subscribeOn(Schedulers.io());
+    }
+
+
 }

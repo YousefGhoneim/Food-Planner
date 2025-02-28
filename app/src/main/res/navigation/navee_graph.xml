@@ -11,7 +11,7 @@
         android:label="HomeFragment" />
     <fragment
         android:id="@+id/searchFragment2"
-        android:name="com.example.footplanner.ui.search.SearchFragment"
+        android:name="com.example.footplanner.ui.search.view.SearchFragment"
         android:label="fragment_search"
         tools:layout="@layout/fragment_search" />
     <fragment
