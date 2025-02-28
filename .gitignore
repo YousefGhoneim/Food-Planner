@@ -1,15 +1,40 @@
+# Ignore IDE-specific files
 *.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
+.idea/
+.idea/**
+
+# Ignore Gradle and build-related files
+.gradle/
+build/
+**/build/
+
+# Ignore local properties (contains SDK paths)
 local.properties
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore dependency caches
+.cxx/
+.externalNativeBuild/
+
+# Ignore APKs and compiled binaries
+*.apk
+*.aab
+*.dex
+*.so
+*.o
+*.obj
+
+# Ignore Keystore files (security-sensitive)
+*.keystore
+*.jks
+
+# Ignore logs and debug files
+*.log
+captures/
+
+# Ignore Generated files
+**/.cxx/
+**/.externalNativeBuild/
