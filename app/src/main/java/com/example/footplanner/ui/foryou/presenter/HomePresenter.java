@@ -2,10 +2,22 @@ package com.example.footplanner.ui.foryou.presenter;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
+import android.util.Log;
+
+import androidx.annotation.RequiresApi;
+
 import com.example.footplanner.db.MealModel;
+import com.example.footplanner.model.Meal;
 import com.example.footplanner.repo.MealRepo;
+
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
+
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
@@ -22,14 +34,37 @@ public class HomePresenter {
     }
 
     public void getMealByDate(long date) {
-        disposables.add(mealRepo.getMealByDate(userId, date)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        meal -> homeView.showRandomMeal(meal),
-                        error -> getNewRandomMealForToday(date)
-                ));
+        if (mealRepo == null) {
+            Log.e("DEBUG", "mealRepo is NULL!");
+            return;
+        }
+        if (homeView == null) {
+            Log.e("DEBUG", "homeView is NULL!");
+            return;
+        }
+
+        disposables.add(
+                mealRepo.getMealByDate(userId, date)
+                        .subscribeOn(Schedulers.io())
+                        .flatMap(meals -> {
+                            Log.d("DEBUG", "Meals from DB: " + meals.size());
+                            if (meals.isEmpty()) {
+                                return mealRepo.getRandomMealForToday(userId, date);
+                            } else {
+                                return Single.just(meals);
+                            }
+                        })
+                        .observeOn(AndroidSchedulers.mainThread()) // Move this after flatMap
+                        .subscribe(
+                                homeView::showRandomMeal,
+                                error -> {
+                                    Log.e("DEBUG", "Error fetching meal", error);
+                                    homeView.showError(error.getMessage());
+                                }
+                        )
+        );
     }
+
 
     private void getNewRandomMealForToday(long date) {
         disposables.add(mealRepo.getRandomMealForToday(userId, date)
@@ -63,5 +98,46 @@ public class HomePresenter {
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         return calendar.getTimeInMillis();
+    }
+
+    public void planMeal(Meal meal, long dateMillis) {
+        disposables.add(
+                mealRepo.getMealByDate(userId, dateMillis)
+                        .subscribeOn(Schedulers.io())
+                        .flatMapCompletable(existingMeals -> {
+                            List<Completable> tasks = new ArrayList<>();
+                            boolean mealExists = false;
+
+                            for (MealModel existingMeal : existingMeals) {
+                                if (existingMeal.getMealId().equals(meal.getIdMeal())) {
+                                    existingMeal.setMeal(meal);
+                                    mealExists = true;
+                                    tasks.add(mealRepo.updatePlannedMeal(userId, dateMillis, existingMeal.getMealId(), existingMeal));
+                                }
+                            }
+
+                            if (!mealExists) {
+                                tasks.add(mealRepo.planMeal(userId, meal, dateMillis)); // Let repo handle conversion
+                            }
+
+                            return Completable.merge(tasks); // Run all updates/inserts in parallel
+                        })
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                () -> homeView.onMealAdded(),
+                                throwable -> homeView.showError(throwable.getMessage())
+                        )
+        );
+    }
+
+
+
+    public void deletePlannedMeal(String mealId, long date) {
+        disposables.add(
+                mealRepo.deleteMeal(userId, mealId, date)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(() -> homeView.onMealDeleted(), throwable -> homeView.showError(throwable.getMessage()))
+        );
     }
 }

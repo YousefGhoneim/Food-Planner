@@ -44,7 +44,7 @@ public class PlannedAdapter extends RecyclerView.Adapter<PlannedAdapter.ViewHold
         Glide.with(context).load(meal.getMeal().getStrMealThumb()).into(holder.imgMeal);
 
         holder.removeButton.setOnClickListener(v -> {
-            presenter.deletePlannedMeal(meal.getMealId());
+            presenter.deletePlannedMeal(meal.getMealId() , meal.getDate());
             mealList.remove(position);
             notifyItemRemoved(position);
         });

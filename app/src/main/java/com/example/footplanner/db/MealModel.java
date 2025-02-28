@@ -12,7 +12,7 @@ import java.util.Date;
 
 import androidx.annotation.NonNull;
 
-@Entity(tableName = "meal" , primaryKeys = {"mealId" , "userId"})
+@Entity(tableName = "meal", primaryKeys = {"mealId", "userId", "date"})
 @TypeConverters({Converter.class , DateConverter.class})
 public class MealModel {
     @ColumnInfo (name = "mealId")
@@ -22,7 +22,7 @@ public class MealModel {
     @ColumnInfo (name = "userId")
     @NonNull
     private String userId;
-
+   @NonNull
     @ColumnInfo (name = "date")
     private long date;
 
