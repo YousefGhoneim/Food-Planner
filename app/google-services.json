@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "345771148438",
+    "project_id": "itiplanner",
+    "storage_bucket": "itiplanner.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:345771148438:android:6da588fe2be58c8154aeb7",
+        "android_client_info": {
+          "package_name": "com.example.footplanner"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "345771148438-0k4g1pa1bsmq4ok5odj7obef39klpcvb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.footplanner",
+            "certificate_hash": "a54bdf769f5d90feace1b2728dfd4f779b8be2f7"
+          }
+        },
+        {
+          "client_id": "345771148438-d5gpkaebbkeepbv9vfe0trsgfh7jhugl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDXEMoVC5rLFWBOqJ8-un0w3OYH32DEEcw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "345771148438-d5gpkaebbkeepbv9vfe0trsgfh7jhugl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
