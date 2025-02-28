@@ -1,4 +1,4 @@
-package com.example.footplanner.ui.favourite;
+package com.example.footplanner.ui.favourite.view;
 
 import android.os.Bundle;
 

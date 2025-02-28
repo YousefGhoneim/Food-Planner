@@ -18,8 +18,9 @@ public interface MealDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     Completable insertMeal(MealModel meal);
 
-    @Query("DELETE FROM meal WHERE mealId = :mealId AND userId = :userId")
-    Completable deleteMeal(String mealId, String userId);
+    @Query("DELETE FROM meal WHERE userId = :userId AND mealId = :mealId AND date BETWEEN :startOfDay AND :endOfDay")
+    Completable deleteMeal(String userId, String mealId, long startOfDay, long endOfDay);
+
 
     @Query("SELECT * FROM meal WHERE userId = :userId")
     Single<List<MealModel>> getAllMeals(String userId);
@@ -27,8 +28,10 @@ public interface MealDao {
     @Query("SELECT * FROM meal WHERE mealId = :mealId AND userId = :userId")
     Single<MealModel> getMealById(String mealId, String userId);
 
-    @Query("SELECT * FROM meal WHERE userId = :userId AND date = :date LIMIT 1")
-    Single<MealModel> getMealByDate(String userId, long date);
+    @Query("SELECT * FROM meal WHERE userId = :userId AND date BETWEEN :startOfDay AND :endOfDay")
+    Single<List<MealModel>> getMealsByDate(String userId, long startOfDay, long endOfDay);
+
+
 
     @Query("SELECT * FROM meal WHERE isPlanned = 1 AND userId = :userId ORDER BY date ASC")
     Flowable<List<MealModel>> getPlannedMeals(String userId);

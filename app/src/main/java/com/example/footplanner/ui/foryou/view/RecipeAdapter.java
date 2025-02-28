@@ -68,7 +68,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         }
         holder.floatingActionButtonMealPlan.setOnClickListener(v -> {
             Meal plannedMeal = mealModel.getMeal();
-            showDatePicker(plannedMeal, holder); // Pass the holder to showDatePicker
+            showDatePicker(plannedMeal, holder);
         });
     }
 
@@ -108,7 +108,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                     } else {
                         long dateMillis = selectedDate.getTimeInMillis();
                         holder.floatingActionButtonFav.setImageResource(R.drawable.bookmarkadded);
-                        // Use the callback to handle meal planning
+
+                        // Pass data to the View layer (Fragment or Activity)
                         if (onMealPlannedListener != null) {
                             onMealPlannedListener.onMealPlanned(meal, dateMillis);
                         }
@@ -126,5 +127,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
         datePickerDialog.show();
     }
+
 
 }

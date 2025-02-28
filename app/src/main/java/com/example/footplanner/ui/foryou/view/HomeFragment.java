@@ -94,16 +94,19 @@ public class HomeFragment extends Fragment implements HomeView , OnMealPlannedLi
         homePresenter.getMealByDate(today);
     }
 
+
+
     @Override
-    public void showRandomMeal(MealModel meal) {
-        if (meal != null && meal.getMeal() != null) {
+    public void showRandomMeal(List<MealModel> meals) {
+        if (meals != null && !meals.isEmpty()) {
             dailyMealList.clear();
-            dailyMealList.add(meal);
+            dailyMealList.addAll(meals);
             dailyMealAdapter.notifyDataSetChanged();
         } else {
             Toast.makeText(getContext(), "No daily inspiration meal available", Toast.LENGTH_SHORT).show();
         }
     }
+
 
     @Override
     public void showRecommendedMeals(List<MealModel> meals) {
@@ -118,6 +121,16 @@ public class HomeFragment extends Fragment implements HomeView , OnMealPlannedLi
     }
 
     @Override
+    public void onMealAdded() {
+        Toast.makeText(getContext(), "Meal added ", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onMealDeleted() {
+        Toast.makeText(getContext(), "Meal deleted ", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         homePresenter.clear();
@@ -125,10 +138,11 @@ public class HomeFragment extends Fragment implements HomeView , OnMealPlannedLi
 
     @Override
     public void onMealPlanned(Meal meal, long dateMillis) {
-        // Use the HomePresenter to save the meal to the database
-//        homePresenter.addPlannedMeal(mealModel);
+        // Pass Meal and date to the Presenter
+        homePresenter.planMeal(meal, dateMillis);
 
-        // Show a success message to the user
+        // Show a success message
         Toast.makeText(getContext(), "Meal planned for " + new Date(dateMillis).toString(), Toast.LENGTH_SHORT).show();
     }
+
 }
