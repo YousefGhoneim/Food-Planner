@@ -19,7 +19,7 @@
             android:name=".AuthanticateActivity"
             android:exported="false" />
         <activity
-            android:name=".OnBoardingActivity"
+            android:name=".ui.onboard.view.OnBoardingActivity"
             android:exported="false" />
         <activity
             android:name=".SplashActivity"

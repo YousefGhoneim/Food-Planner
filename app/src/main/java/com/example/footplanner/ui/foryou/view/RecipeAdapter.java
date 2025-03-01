@@ -2,6 +2,7 @@ package com.example.footplanner.ui.foryou.view;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -66,20 +69,27 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
             holder.txt_card.setText(meal.getStrMeal());
 
+            // Navigate to DetailedFragment when a meal is clicked
             holder.itemView.setOnClickListener(v -> {
-                Toast.makeText(context, "Clicked: " + meal.getStrMeal(), Toast.LENGTH_SHORT).show();
+                Bundle bundle = new Bundle();
+                bundle.putString("meal_id", meal.getIdMeal()); // Pass meal ID
+
+                NavController navController = Navigation.findNavController(v);
+                navController.navigate(R.id.action_homeFragment2_to_detailedFragment, bundle);
             });
         }
+
         holder.floatingActionButtonMealPlan.setOnClickListener(v -> {
             Meal plannedMeal = mealModel.getMeal();
             showDatePicker(plannedMeal, holder);
         });
+
+        // Favorite Button Click
         holder.floatingActionButtonFav.setOnClickListener(v -> {
             if (mealModel != null) {
                 toggleMealFavouriteStatus(mealModel, holder);
             }
         });
-
     }
 
     @Override

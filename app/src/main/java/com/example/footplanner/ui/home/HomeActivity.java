@@ -29,6 +29,9 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_home);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
         bottomNavigationView = findViewById(R.id.nav_view);
 
         userId = getUserId();

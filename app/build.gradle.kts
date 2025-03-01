@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.google.gms.google.services)
+    id("androidx.navigation.safeargs")
 }
 
 
@@ -76,6 +77,6 @@ dependencies {
     implementation(libs.room.rxjava3)
     annotationProcessor(libs.room.compiler)
     implementation (libs.carouselrecyclerview)
-
+    implementation (libs.circleimageview)
 
 }

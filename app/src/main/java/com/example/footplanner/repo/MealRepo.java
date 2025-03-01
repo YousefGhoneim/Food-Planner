@@ -4,7 +4,12 @@ import android.util.Log;
 
 import com.example.footplanner.db.MealModel;
 import com.example.footplanner.db.ProductLocalDataSource;
+import com.example.footplanner.model.CategoryResponse;
+import com.example.footplanner.model.CountryResponse;
+import com.example.footplanner.model.IngredientResponse;
 import com.example.footplanner.model.Meal;
+import com.example.footplanner.model.MealResponse;
+import com.example.footplanner.model.MealSpecification;
 import com.example.footplanner.network.ProductRemoteDataSource;
 
 import java.util.ArrayList;
@@ -34,12 +39,11 @@ public class MealRepo {
         return repo;
     }
 
-    public Single<MealModel> getMealById(String userId, String mealId) {
-        return localDataSource.getMealById(userId, mealId)
-                .onErrorResumeNext(error -> remoteDataSource.getMealById(userId, mealId)
-                        .flatMap(meal -> saveMeal(meal).andThen(Single.just(meal))))
+    public Single<MealResponse> getMealById(String mealId) {
+        return remoteDataSource.getMealById(mealId)
                 .subscribeOn(Schedulers.io());
     }
+
 
     public Completable saveMeal(MealModel meal) {
         return localDataSource.insertMeal(meal)
@@ -142,5 +146,24 @@ public class MealRepo {
                 .subscribeOn(Schedulers.io());
     }
 
+    public Single<CategoryResponse> getCategories() {
+        return remoteDataSource.getCategories();
+    }
+
+    public Single<CountryResponse> getCountries() {
+        return remoteDataSource.getCountries();
+    }
+    public  Single<IngredientResponse> getIngredients() {
+        return remoteDataSource.getIngredients();
+    }
+    public Single<List<MealSpecification>> getMealsByIngredient(String ingredient) {
+        return remoteDataSource.getMealsByIngredient(ingredient);
+    }
+    public Single<List<MealSpecification>> getMealsByCategory(String category) {
+        return remoteDataSource.getMealsByCategory(category);
+    }
+    public Single<List<MealSpecification>> getMealsByCountry(String country) {
+        return remoteDataSource.getMealsByCountry(country);
+    }
 
 }
