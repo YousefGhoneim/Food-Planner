@@ -16,13 +16,13 @@
             android:name=".ui.home.HomeActivity"
             android:exported="false" />
         <activity
-            android:name=".AuthanticateActivity"
+            android:name=".ui.authanticate.AuthanticateActivity"
             android:exported="false" />
         <activity
             android:name=".ui.onboard.view.OnBoardingActivity"
             android:exported="false" />
         <activity
-            android:name=".SplashActivity"
+            android:name=".ui.splash.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

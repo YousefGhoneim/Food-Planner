@@ -69,7 +69,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
             holder.txt_card.setText(meal.getStrMeal());
 
-            // Navigate to DetailedFragment when a meal is clicked
             holder.itemView.setOnClickListener(v -> {
                 Bundle bundle = new Bundle();
                 bundle.putString("meal_id", meal.getIdMeal()); // Pass meal ID

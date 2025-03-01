@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -12,9 +14,10 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
-import com.example.footplanner.AuthanticateActivity;
+import com.example.footplanner.ui.authanticate.AuthanticateActivity;
 import com.example.footplanner.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 
 
@@ -22,6 +25,9 @@ public class HomeActivity extends AppCompatActivity {
     private static final String TAG = "HomeActivity";
     private BottomNavigationView bottomNavigationView;
     private String userId;
+    private FloatingActionButton menuButton;
+    private LinearLayout menuLayout;
+    private ImageView logoutIcon;
 
 
     @Override
@@ -29,6 +35,9 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_home);
+        menuButton = findViewById(R.id.menuButton);
+        menuLayout = findViewById(R.id.menuLayout);
+        logoutIcon = findViewById(R.id.logoutIcon);
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
@@ -45,17 +54,29 @@ public class HomeActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
 
+        menuButton.setOnClickListener(v -> toggleMenu());
+
+        // Handle Logout Icon Click
+        logoutIcon.setOnClickListener(v -> logout());
 
     }
     private String getUserId() {
         SharedPreferences prefs = getSharedPreferences("user_prefs", MODE_PRIVATE);
-        return prefs.getString("user_id", "guestUser");  // Default to guest user
+        return prefs.getString("user_id", "guestUser");
     }
 
-    public void logout(View view) {
+    private void toggleMenu() {
+        if (menuLayout.getVisibility() == View.GONE) {
+            menuLayout.setVisibility(View.VISIBLE); // Show the menu
+        } else {
+            menuLayout.setVisibility(View.GONE); // Hide the menu
+        }
+    }
+
+    private void logout() {
+
         FirebaseAuth.getInstance().signOut();  // Sign out from Firebase
 
-        // Clear saved user ID
         SharedPreferences prefs = getSharedPreferences("user_prefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.clear();

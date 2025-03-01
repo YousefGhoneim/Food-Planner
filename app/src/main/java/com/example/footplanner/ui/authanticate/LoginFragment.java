@@ -1,4 +1,4 @@
-package com.example.footplanner;
+package com.example.footplanner.ui.authanticate;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
@@ -21,6 +21,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.footplanner.R;
 import com.example.footplanner.ui.home.HomeActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;

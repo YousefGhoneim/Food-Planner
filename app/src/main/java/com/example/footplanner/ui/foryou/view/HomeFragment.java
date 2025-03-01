@@ -57,7 +57,6 @@ public class HomeFragment extends Fragment implements HomeView , OnMealPlannedLi
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         customToolbar = view.findViewById(R.id.custom_toolbar);
-        menuIcon = view.findViewById(R.id.menuIcon);
         appLogo = view.findViewById(R.id.appLogo);
         profileIcon = view.findViewById(R.id.profileIcon);
 
@@ -139,10 +138,7 @@ public class HomeFragment extends Fragment implements HomeView , OnMealPlannedLi
 
     @Override
     public void onMealPlanned(Meal meal, long dateMillis) {
-        // Pass Meal and date to the Presenter
         homePresenter.planMeal(meal, dateMillis);
-
-        // Show a success message
         Toast.makeText(getContext(), "Meal planned for " + new Date(dateMillis).toString(), Toast.LENGTH_SHORT).show();
     }
 
