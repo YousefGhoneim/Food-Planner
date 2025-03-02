@@ -107,7 +107,7 @@ public class MealRepo {
 
 
     public Completable updatePlannedMeal(String userId, long date, String mealId, MealModel meal) {
-        return localDataSource.updatePlannedMeal(userId, date, mealId, meal.getMeal())
+        return localDataSource.updatePlannedMeal(userId, date, mealId, meal)
                 .subscribeOn(Schedulers.io());
     }
 
@@ -138,7 +138,7 @@ public class MealRepo {
     }
 
     public Completable planMeal(String userId, Meal meal, long dateMillis) {
-        return localDataSource.planMeal(userId, meal, dateMillis); // Pass Meal & dateMillis
+        return localDataSource.planMeal(userId, meal, dateMillis);
     }
 
     public Completable toggleMealFavouriteStatus(Meal meal, String userId) {
@@ -164,6 +164,10 @@ public class MealRepo {
     }
     public Single<List<MealSpecification>> getMealsByCountry(String country) {
         return remoteDataSource.getMealsByCountry(country);
+    }
+    public Completable clearUserMeals(String userId) {
+        return localDataSource.clearUserMeals(userId)
+                .subscribeOn(Schedulers.io());
     }
 
 }

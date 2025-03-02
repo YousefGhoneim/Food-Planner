@@ -78,7 +78,6 @@ public class DetailedFragment extends Fragment implements DetailedView, OnDetail
             mealId = getArguments().getString("meal_id");
         }
 
-        // Initialize presenter and fetch meal details
         presenter = new DetailedPresenter(this , MealRepo.getInstance(ProductLocalDataSource.getInstance(requireContext()), ProductRemoteDataSource.getInstance(requireContext())));
         presenter.getMealDetails(mealId);
     }
@@ -111,7 +110,7 @@ public class DetailedFragment extends Fragment implements DetailedView, OnDetail
             String videoId = youtubeUrl.substring(youtubeUrl.lastIndexOf("=") + 1);
             String embedUrl = "https://www.youtube.com/embed/" + videoId + "?autoplay=1&rel=0";
 
-            webViewDetails.getSettings().setJavaScriptEnabled(true); // Enable JavaScript
+            webViewDetails.getSettings().setJavaScriptEnabled(true);
             webViewDetails.getSettings().setDomStorageEnabled(true);
             webViewDetails.setWebViewClient(new WebViewClient());
             webViewDetails.loadUrl(embedUrl);

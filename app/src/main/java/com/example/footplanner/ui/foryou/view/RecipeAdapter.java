@@ -128,7 +128,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                         long dateMillis = selectedDate.getTimeInMillis();
                         holder.floatingActionButtonMealPlan.setImageResource(R.drawable.baseline_remove_24);
 
-                        // Pass data to the View layer (Fragment or Activity)
                         if (onMealPlannedListener != null) {
                             onMealPlannedListener.onMealPlanned(meal, dateMillis);
                         }

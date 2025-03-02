@@ -39,11 +39,9 @@ public class FavouritFragment extends Fragment implements FavouriteView, OnMealF
         recyclerView = view.findViewById(R.id.favRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        // Initialize Adapter
         adapter = new FavouriteAdapter(requireContext(), meals, this);
         recyclerView.setAdapter(adapter);
 
-        // Initialize Presenter
         presenter = new FavouritePresenter(
                 this,
                 MealRepo.getInstance(
@@ -53,7 +51,6 @@ public class FavouritFragment extends Fragment implements FavouriteView, OnMealF
                 requireContext()
         );
 
-        // Fetch favorite meals
         presenter.getFavoriteMeals();
     }
 

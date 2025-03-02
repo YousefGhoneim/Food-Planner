@@ -7,7 +7,9 @@ facebookLogin = "18.0.1"
 facebookLoginVersion = "latest.release"
 firebaseAuth = "23.2.0"
 firebaseBom = "33.9.0"
+firebaseBomVersion = "33.10.0"
 firebaseCore = "21.1.1"
+firebaseFirestore = "25.1.2"
 glide = "4.16.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -22,6 +24,7 @@ constraintlayout = "2.2.0"
 materialVersion = "1.9.0"
 navigationSafeArgsGradlePlugin = "2.8.8"
 playServicesAuth = "21.3.0"
+playServicesBase = "18.5.0"
 recyclerview = "1.4.0"
 retrofit = "2.9.0"
 roomRuntime = "2.6.1"
@@ -33,6 +36,7 @@ viewpager2 = "1.1.0"
 navigationFragment = "2.8.7"
 navigationUi = "2.8.7"
 googleGmsGoogleServices = "4.4.2"
+firebaseDatabase = "21.0.0"
 
 [libraries]
 adapter-rxjava3 = { module = "com.squareup.retrofit2:adapter-rxjava3", version.ref = "retrofit" }
@@ -45,9 +49,12 @@ facebook-login = { module = "com.facebook.android:facebook-login", version.ref =
 facebook-login-vlatestrelease = { module = "com.facebook.android:facebook-login", version.ref = "facebookLoginVersion" }
 firebase-auth = { module = "com.google.firebase:firebase-auth", version.ref = "firebaseAuth" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+firebase-bom-v33100 = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBomVersion" }
 firebase-core = { module = "com.google.firebase:firebase-core", version.ref = "firebaseCore" }
+firebase-firestore = { module = "com.google.firebase:firebase-firestore", version.ref = "firebaseFirestore" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 google-firebase-auth = { module = "com.google.firebase:firebase-auth" }
+google-firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -61,6 +68,7 @@ constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayo
 material-v190 = { module = "com.google.android.material:material", version.ref = "materialVersion" }
 navigation-safe-args-gradle-plugin = { module = "androidx.navigation:navigation-safe-args-gradle-plugin", version.ref = "navigationSafeArgsGradlePlugin" }
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
+play-services-base = { module = "com.google.android.gms:play-services-base", version.ref = "playServicesBase" }
 recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerview" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
@@ -72,6 +80,7 @@ shimmer = { module = "com.facebook.shimmer:shimmer", version.ref = "shimmer" }
 viewpager2 = { module = "androidx.viewpager2:viewpager2", version.ref = "viewpager2" }
 navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigationFragment" }
 navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigationUi" }
+firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabase" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

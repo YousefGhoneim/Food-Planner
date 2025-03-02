@@ -18,7 +18,7 @@ public class SearchPresenter {
     public SearchPresenter(SearchVieww view, MealRepo repo) {
         this.view = view;
         this.repo = repo;
-        this.compositeDisposable = new CompositeDisposable(); // Initialize here
+        this.compositeDisposable = new CompositeDisposable();
     }
 
     public void getIngredients() {

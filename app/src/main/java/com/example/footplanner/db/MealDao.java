@@ -56,4 +56,7 @@ public interface MealDao {
     @Query("UPDATE meal SET isFavourite = :isFavourite WHERE mealId = :mealId AND userId = :userId")
     Completable updateMealFavouriteStatus(String mealId, String userId, boolean isFavourite);
 
+        @Query("DELETE FROM meal WHERE userId = :userId")
+        Completable deleteAllMealsForUser(String userId);
+
 }

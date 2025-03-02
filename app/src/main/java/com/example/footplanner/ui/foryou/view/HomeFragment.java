@@ -60,7 +60,6 @@ public class HomeFragment extends Fragment implements HomeView , OnMealPlannedLi
         appLogo = view.findViewById(R.id.appLogo);
         profileIcon = view.findViewById(R.id.profileIcon);
 
-        // Daily RecyclerView setup
         dailyRecyclerView = view.findViewById(R.id.dailyRecyclerView);
         dailyRecyclerView.setHasFixedSize(true);
         dailyRecyclerView.setAlpha(true);
@@ -68,7 +67,6 @@ public class HomeFragment extends Fragment implements HomeView , OnMealPlannedLi
         dailyMealAdapter = new RecipeAdapter(getContext(), dailyMealList,this,this);
         dailyRecyclerView.setAdapter(dailyMealAdapter);
 
-        // Recommended Meals RecyclerView setup
         recommendedMealsRecyclerView = view.findViewById(R.id.recommenddeddailyRecyclerView);
         recommendedMealsRecyclerView.setHasFixedSize(true);
         recommendedMealsRecyclerView.setAlpha(true);
@@ -117,7 +115,7 @@ public class HomeFragment extends Fragment implements HomeView , OnMealPlannedLi
 
     @Override
     public void showError(String error) {
-        Toast.makeText(getContext(), "Error: " + error, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), error + " ", Toast.LENGTH_SHORT).show();
     }
 
     @Override

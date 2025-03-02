@@ -111,7 +111,7 @@ public class PlannedFragment extends Fragment implements PlannedView {
             }
         }
 
-        // Notify each adapter properly
+        // Notify each adapter
         for (String day : adaptersByDay.keySet()) {
             adaptersByDay.get(day).notifyDataSetChanged();
         }

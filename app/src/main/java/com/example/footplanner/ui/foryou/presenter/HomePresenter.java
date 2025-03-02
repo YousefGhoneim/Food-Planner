@@ -1,5 +1,6 @@
 package com.example.footplanner.ui.foryou.presenter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -10,10 +11,16 @@ import androidx.annotation.RequiresApi;
 import com.example.footplanner.db.MealModel;
 import com.example.footplanner.model.Meal;
 import com.example.footplanner.repo.MealRepo;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Completable;
@@ -53,7 +60,7 @@ public class HomePresenter {
                                 return Single.just(meals);
                             }
                         })
-                        .observeOn(AndroidSchedulers.mainThread()) // Move this after flatMap
+                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 homeView::showRandomMeal,
                                 error -> {
@@ -99,28 +106,79 @@ public class HomePresenter {
         return calendar.getTimeInMillis();
     }
 
+    @SuppressLint("CheckResult")
     public void planMeal(Meal meal, long dateMillis) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference plannedMealRef = db.collection("users").document(userId)
+                .collection("planned").document(meal.getIdMeal());
+
         disposables.add(
-                mealRepo.getMealByDate(userId, dateMillis)
-                        .subscribeOn(Schedulers.io())
-                        .flatMapCompletable(existingMeals -> {
-                            List<Completable> tasks = new ArrayList<>();
-                            boolean mealExists = false;
+                Completable.create(emitter -> {
+                            plannedMealRef.get()
+                                    .addOnSuccessListener(documentSnapshot -> {
+                                        MealModel mealModel = new MealModel(
+                                                meal.getIdMeal(),
+                                                userId,
+                                                dateMillis,
+                                                true, // isPlanned
+                                                false, // isFavourite
+                                                meal
+                                        );
 
-                            for (MealModel existingMeal : existingMeals) {
-                                if (existingMeal.getMealId().equals(meal.getIdMeal())) {
-                                    existingMeal.setMeal(meal);
-                                    mealExists = true;
-                                    tasks.add(mealRepo.updatePlannedMeal(userId, dateMillis, existingMeal.getMealId(), existingMeal));
-                                }
-                            }
+                                        if (documentSnapshot.exists()) {
+                                            // Meal already planned, update dates
+                                            List<Long> dates = (List<Long>) documentSnapshot.get("dates");
+                                            if (dates == null) {
+                                                dates = new ArrayList<>();
+                                            }
 
-                            if (!mealExists) {
-                                tasks.add(mealRepo.planMeal(userId, meal, dateMillis)); // Let repo handle conversion
-                            }
+                                            if (!dates.contains(dateMillis)) {
+                                                dates.add(dateMillis);
 
-                            return Completable.merge(tasks); // Run all updates/inserts in parallel
+                                                plannedMealRef.update("dates", dates)
+                                                        .addOnSuccessListener(aVoid -> {
+                                                            // Insert into Room Database
+                                                            mealRepo.planMeal(userId, meal, dateMillis)
+                                                                    .subscribeOn(Schedulers.io())
+                                                                    .observeOn(AndroidSchedulers.mainThread())
+                                                                    .subscribe(
+                                                                            () -> emitter.onComplete(),
+                                                                            error -> {
+                                                                                Log.e("planMeal", "Error inserting planned meal into Room", error);
+                                                                                emitter.onError(error);
+                                                                            }
+                                                                    );
+                                                        })
+                                                        .addOnFailureListener(emitter::onError);
+                                            } else {
+                                                emitter.onComplete(); // Already planned
+                                            }
+                                        } else {
+                                            // First time planning this meal
+                                            Map<String, Object> mealData = new HashMap<>();
+                                            mealData.put("mealId", meal.getIdMeal());
+                                            mealData.put("dates", Collections.singletonList(dateMillis));
+
+                                            plannedMealRef.set(mealData)
+                                                    .addOnSuccessListener(aVoid -> {
+                                                        // Insert into Room Database
+                                                        mealRepo.planMeal(userId, meal, dateMillis)
+                                                                .subscribeOn(Schedulers.io())
+                                                                .observeOn(AndroidSchedulers.mainThread())
+                                                                .subscribe(
+                                                                        () -> emitter.onComplete(),
+                                                                        error -> {
+                                                                            Log.e("planMeal", "Error inserting planned meal into Room", error);
+                                                                            emitter.onError(error);
+                                                                        }
+                                                                );
+                                                    })
+                                                    .addOnFailureListener(emitter::onError);
+                                        }
+                                    })
+                                    .addOnFailureListener(emitter::onError);
                         })
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 () -> homeView.onMealAdded(),
@@ -128,6 +186,7 @@ public class HomePresenter {
                         )
         );
     }
+
 
 
 
@@ -146,7 +205,7 @@ public class HomePresenter {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 () -> {
-                                    // Notify the view that the operation was successful
+                                    Log.i("TAG", "toggleMealFavouriteStatus: meal added ");
                                     homeView.showError("Meal favourite status updated!");
                                 },
                                 throwable -> homeView.showError("Failed to update favourite status: " + throwable.getMessage())
