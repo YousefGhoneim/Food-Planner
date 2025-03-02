@@ -2,6 +2,7 @@ package com.example.footplanner.ui.foryou.view;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -17,6 +20,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.footplanner.R;
 import com.example.footplanner.db.MealModel;
 import com.example.footplanner.model.Meal;
+import com.example.footplanner.ui.favourite.presenter.OnMealFavouriteListener;
 import com.example.footplanner.ui.planned.presenter.OnMealPlannedListener;
 import com.example.footplanner.ui.planned.presenter.PlannedView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -32,11 +36,14 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     private static final String TAG = "RecipeAdapter";
 
     private OnMealPlannedListener onMealPlannedListener; // Callback interface
+    private OnMealFavouriteListener onMealFavouriteListener;
 
-    public RecipeAdapter(Context context, List<MealModel> mealsList , OnMealPlannedListener listener) {
+    public RecipeAdapter(Context context, List<MealModel> mealsList , OnMealPlannedListener listener , OnMealFavouriteListener favouriteListener) {
         this.context = context;
         this.mealsList = mealsList;
         this.onMealPlannedListener = listener;
+        this.onMealFavouriteListener = favouriteListener;
+
     }
 
     @NonNull
@@ -63,12 +70,24 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             holder.txt_card.setText(meal.getStrMeal());
 
             holder.itemView.setOnClickListener(v -> {
-                Toast.makeText(context, "Clicked: " + meal.getStrMeal(), Toast.LENGTH_SHORT).show();
+                Bundle bundle = new Bundle();
+                bundle.putString("meal_id", meal.getIdMeal()); // Pass meal ID
+
+                NavController navController = Navigation.findNavController(v);
+                navController.navigate(R.id.action_homeFragment2_to_detailedFragment, bundle);
             });
         }
+
         holder.floatingActionButtonMealPlan.setOnClickListener(v -> {
             Meal plannedMeal = mealModel.getMeal();
             showDatePicker(plannedMeal, holder);
+        });
+
+        // Favorite Button Click
+        holder.floatingActionButtonFav.setOnClickListener(v -> {
+            if (mealModel != null) {
+                toggleMealFavouriteStatus(mealModel, holder);
+            }
         });
     }
 
@@ -103,13 +122,12 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                     maxDate.add(Calendar.DAY_OF_MONTH, 7);
 
                     if (selectedDate.before(Calendar.getInstance()) || selectedDate.after(maxDate)) {
-                        holder.floatingActionButtonFav.setImageResource(R.drawable.bookmarkadd);
+                        holder.floatingActionButtonMealPlan.setImageResource(R.drawable.baseline_add_24);
                         Toast.makeText(context, "Please select a date within the next 7 days.", Toast.LENGTH_SHORT).show();
                     } else {
                         long dateMillis = selectedDate.getTimeInMillis();
-                        holder.floatingActionButtonFav.setImageResource(R.drawable.bookmarkadded);
+                        holder.floatingActionButtonMealPlan.setImageResource(R.drawable.baseline_remove_24);
 
-                        // Pass data to the View layer (Fragment or Activity)
                         if (onMealPlannedListener != null) {
                             onMealPlannedListener.onMealPlanned(meal, dateMillis);
                         }
@@ -127,6 +145,17 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
         datePickerDialog.show();
     }
-
+    private void toggleMealFavouriteStatus(MealModel mealModel, ViewHolder holder) {
+        if (mealModel.isFavourite()) {
+            mealModel.setFavourite(false);
+            holder.floatingActionButtonFav.setImageResource(R.drawable.bookmarkadd);
+        } else  {
+            mealModel.setFavourite(true);
+            holder.floatingActionButtonFav.setImageResource(R.drawable.baseline_favorite_24);
+        }
+        if (onMealFavouriteListener != null) {
+            onMealFavouriteListener.onMealFavouriteClicked(mealModel.getMeal());
+        }
+    }
 
 }

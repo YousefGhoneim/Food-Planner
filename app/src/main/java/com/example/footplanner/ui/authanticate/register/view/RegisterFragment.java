@@ -1,6 +1,5 @@
-package com.example.footplanner;
+package com.example.footplanner.ui.authanticate.register.view;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -8,7 +7,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
-import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,26 +17,26 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
+import com.example.footplanner.R;
+import com.example.footplanner.db.ProductLocalDataSource;
+import com.example.footplanner.network.ProductRemoteDataSource;
+import com.example.footplanner.repo.MealRepo;
+import com.example.footplanner.ui.authanticate.register.presenter.RegisterPresenter;
+import com.example.footplanner.ui.authanticate.register.presenter.RegisterView;
 import com.google.firebase.auth.FirebaseUser;
 
-public class RegisterFragment extends Fragment {
+public class RegisterFragment extends Fragment implements RegisterView {
     private EditText emailInput, passwordInput, confirmPasswordInput;
     private TextView loginRedirect;
     private Button signupButton;
     private ProgressBar progressBar;
-    private FirebaseAuth mAuth;
-    private EditText nameInput;
-
-    private static final String TAG = "RegisterFragment";
+    private RegisterPresenter presenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAuth = FirebaseAuth.getInstance();  // Initialize Firebase Auth
+        // Initialize Presenter
+        presenter = new RegisterPresenter(this, MealRepo.getInstance(ProductLocalDataSource.getInstance(requireContext()), ProductRemoteDataSource.getInstance(requireContext())), requireContext());
     }
 
     @Override
@@ -51,7 +49,6 @@ public class RegisterFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // Initialize UI Elements
-        nameInput = view.findViewById(R.id.etName);
         emailInput = view.findViewById(R.id.etEmail);
         passwordInput = view.findViewById(R.id.etPassword);
         confirmPasswordInput = view.findViewById(R.id.etConfirmPassword);
@@ -72,9 +69,9 @@ public class RegisterFragment extends Fragment {
         String password = passwordInput.getText().toString().trim();
         String confirmPassword = confirmPasswordInput.getText().toString().trim();
 
-        if (!validateInput(email, password, confirmPassword)) return;
-
-        registerUser(email, password);
+        if (validateInput(email, password, confirmPassword)) {
+            presenter.registerUser(email, password);
+        }
     }
 
     private boolean validateInput(String email, String password, String confirmPassword) {
@@ -93,35 +90,24 @@ public class RegisterFragment extends Fragment {
         return true;
     }
 
-    private void registerUser(String email, String password) {
-        toggleLoading(true);
-
-        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                FirebaseUser user = mAuth.getCurrentUser();
-                if (user != null) {
-                    user.sendEmailVerification()
-                            .addOnCompleteListener(emailTask -> {
-                                if (emailTask.isSuccessful()) {
-                                    Toast.makeText(getActivity(), "Check your email for verification", Toast.LENGTH_LONG).show();
-                                    mAuth.signOut(); // Sign out after registration
-                                    Navigation.findNavController(requireView()).navigate(R.id.action_registerFragment_to_loginFragment2);
-                                    toggleLoading(false);
-                                } else {
-                                    Log.e(TAG, "Email Verification Error", emailTask.getException());
-                                }
-                            });
-                }
-            } else {
-                Log.e(TAG, "Registration Error", task.getException());
-                Toast.makeText(getActivity(), "Registration failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
-            }
-            toggleLoading(false);
-        });
-    }
-
-    private void toggleLoading(boolean isLoading) {
+    @Override
+    public void showLoading(boolean isLoading) {
         progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
         signupButton.setEnabled(!isLoading);
+    }
+
+    @Override
+    public void showRegistrationSuccess(FirebaseUser user) {
+        Toast.makeText(requireContext(), "Check your email for verification", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showRegistrationError(String message) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void navigateToLogin() {
+        Navigation.findNavController(requireView()).navigate(R.id.action_registerFragment_to_loginFragment2);
     }
 }

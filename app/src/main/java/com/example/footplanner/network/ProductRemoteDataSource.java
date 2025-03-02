@@ -45,20 +45,9 @@ public class ProductRemoteDataSource {
         return instance;
     }
 
-    public Single<MealModel> getMealById(String userId, String mealId) {
-        return mealDao.getMealById(mealId, userId)
-                .flatMap(localMeal -> apiService.getMealById(mealId)
-                        .flatMap(apiResponse -> {
-                            if (apiResponse.getMeals() != null && !apiResponse.getMeals().isEmpty()) {
-                                MealModel updatedMeal = mapApiMealToLocal(apiResponse.getMeals().get(0), localMeal);
-                                return mealDao.insertMeal(updatedMeal)
-                                        .subscribeOn(Schedulers.io())
-                                        .andThen(Single.just(updatedMeal));
-                            } else {
-                                return Single.just(localMeal);
-                            }
-                        }))
-                .onErrorResumeNext(throwable -> mealDao.getMealById(mealId, userId));
+    public Single<MealResponse> getMealById(String mealId) {
+        return apiService.getMealById(mealId)
+                .subscribeOn(Schedulers.io());
     }
 
     public Completable saveMeal(MealModel meal) {
@@ -122,6 +111,39 @@ public class ProductRemoteDataSource {
                 false,
                 meal
         );
+    }
+    public Single<CategoryResponse> getCategories() {
+        return apiService.getMealCategories();
+    }
+
+    public Single<CountryResponse> getCountries() {
+        return apiService.getMealCountries();
+    }
+    public Single<IngredientResponse> getIngredients() {
+        return apiService.getMealIngredients();
+    }
+    public Single<List<MealSpecification>> getMealsByIngredient(String ingredient) {
+        Log.d("API_CALL", "Fetching meals by ingredient: " + ingredient);
+        return apiService.getMealsByIngredient(ingredient)
+                .map(response -> (List<MealSpecification>) response.getMealsFromIngredient())
+                .doOnSuccess(meals -> Log.d("API_RESPONSE", "Received " + meals.size() + " meals"))
+                .doOnError(throwable -> Log.e("API_ERROR", "Error fetching meals", throwable));
+    }
+
+    public Single<List<MealSpecification>> getMealsByCategory(String category) {
+        Log.d("API_CALL", "Fetching meals by category: " + category);
+        return apiService.getMealsByCategory(category)
+                .map(response -> (List<MealSpecification>) response.getMealsFromCategory())
+                .doOnSuccess(meals -> Log.d("API_RESPONSE", "Received " + meals.size() + " meals"))
+                .doOnError(throwable -> Log.e("API_ERROR", "Error fetching meals", throwable));
+    }
+
+    public Single<List<MealSpecification>> getMealsByCountry(String country) {
+        Log.d("API_CALL", "Fetching meals by country: " + country);
+        return apiService.getMealsByCountry(country)
+                .map(response -> (List<MealSpecification>) response.getMealsFromCountry())
+                .doOnSuccess(meals -> Log.d("API_RESPONSE", "Received " + meals.size() + " meals"))
+                .doOnError(throwable -> Log.e("API_ERROR", "Error fetching meals", throwable));
     }
 
 

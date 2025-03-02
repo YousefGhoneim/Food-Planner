@@ -8,20 +8,61 @@
     <fragment
         android:id="@+id/homeFragment2"
         android:name="com.example.footplanner.ui.foryou.view.HomeFragment"
-        android:label="HomeFragment" />
+        android:label="HomeFragment" >
+        <action
+            android:id="@+id/action_homeFragment2_to_detailedFragment"
+            app:destination="@id/detailedFragment" />
+    </fragment>
     <fragment
         android:id="@+id/searchFragment2"
-        android:name="com.example.footplanner.ui.search.SearchFragment"
+        android:name="com.example.footplanner.ui.search.view.SearchFragment"
         android:label="fragment_search"
-        tools:layout="@layout/fragment_search" />
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_searchFragment2_to_mealFilteringFragment"
+            app:destination="@id/mealFilteringFragment" />
+    </fragment>
     <fragment
         android:id="@+id/plannedFragment"
         android:name="com.example.footplanner.ui.planned.view.PlannedFragment"
         android:label="fragment_planned"
-        tools:layout="@layout/fragment_planned" />
+        tools:layout="@layout/fragment_planned" >
+        <action
+            android:id="@+id/action_plannedFragment_to_detailedFragment"
+            app:destination="@id/detailedFragment" />
+    </fragment>
     <fragment
         android:id="@+id/favouritFragment"
         android:name="com.example.footplanner.ui.favourite.view.FavouritFragment"
         android:label="fragment_favourit"
-        tools:layout="@layout/fragment_favourit" />
+        tools:layout="@layout/fragment_favourit" >
+        <action
+            android:id="@+id/action_favouritFragment_to_detailedFragment"
+            app:destination="@id/detailedFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/mealFilteringFragment"
+        android:name="com.example.footplanner.ui.filter.view.FilteringFragment"
+        tools:layout="@layout/fragment_filtered">
+        <argument
+            android:name="id"
+            app:argType="string" />
+        <argument
+            android:name="type"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_mealFilteringFragment_to_detailedFragment"
+            app:destination="@id/detailedFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailedFragment"
+        android:name="com.example.footplanner.ui.detailes.view.DetailedFragment"
+        tools:layout="@layout/fragment_detailed">
+        <argument
+            android:name="id" />
+    </fragment>
+
+
+
 </navigation>

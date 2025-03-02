@@ -4,9 +4,15 @@ import android.util.Log;
 
 import com.example.footplanner.db.MealModel;
 import com.example.footplanner.db.ProductLocalDataSource;
+import com.example.footplanner.model.CategoryResponse;
+import com.example.footplanner.model.CountryResponse;
+import com.example.footplanner.model.IngredientResponse;
 import com.example.footplanner.model.Meal;
+import com.example.footplanner.model.MealResponse;
+import com.example.footplanner.model.MealSpecification;
 import com.example.footplanner.network.ProductRemoteDataSource;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -33,13 +39,11 @@ public class MealRepo {
         return repo;
     }
 
-    //  Get Meal by ID (First check local, then remote)
-    public Single<MealModel> getMealById(String userId, String mealId) {
-        return localDataSource.getMealById(userId, mealId)
-                .onErrorResumeNext(error -> remoteDataSource.getMealById(userId, mealId)
-                        .flatMap(meal -> saveMeal(meal).andThen(Single.just(meal))))
+    public Single<MealResponse> getMealById(String mealId) {
+        return remoteDataSource.getMealById(mealId)
                 .subscribeOn(Schedulers.io());
     }
+
 
     public Completable saveMeal(MealModel meal) {
         return localDataSource.insertMeal(meal)
@@ -59,7 +63,16 @@ public class MealRepo {
 
     public Single<List<MealModel>> getMealByDate(String userId, long date) {
         return localDataSource.getMealsByDate(userId, date)
-                .subscribeOn(Schedulers.io());
+                .subscribeOn(Schedulers.io())
+                .flatMap(mealModels -> {
+                    List<MealModel> plannedMeals = new ArrayList<>();
+                    for (MealModel meal : mealModels) {
+                        if (meal.isPlanned()) {
+                            plannedMeals.add(meal);
+                        }
+                    }
+                    return Single.just(plannedMeals);
+                });
     }
 
     public Single<List<MealModel>> getRandomMealForToday(String userId, long date) {
@@ -94,7 +107,7 @@ public class MealRepo {
 
 
     public Completable updatePlannedMeal(String userId, long date, String mealId, MealModel meal) {
-        return localDataSource.updatePlannedMeal(userId, date, mealId, meal.getMeal())
+        return localDataSource.updatePlannedMeal(userId, date, mealId, meal)
                 .subscribeOn(Schedulers.io());
     }
 
@@ -125,6 +138,36 @@ public class MealRepo {
     }
 
     public Completable planMeal(String userId, Meal meal, long dateMillis) {
-        return localDataSource.planMeal(userId, meal, dateMillis); // Pass Meal & dateMillis
+        return localDataSource.planMeal(userId, meal, dateMillis);
     }
+
+    public Completable toggleMealFavouriteStatus(Meal meal, String userId) {
+        return localDataSource.toggleMealFavouriteStatus(meal, userId)
+                .subscribeOn(Schedulers.io());
+    }
+
+    public Single<CategoryResponse> getCategories() {
+        return remoteDataSource.getCategories();
+    }
+
+    public Single<CountryResponse> getCountries() {
+        return remoteDataSource.getCountries();
+    }
+    public  Single<IngredientResponse> getIngredients() {
+        return remoteDataSource.getIngredients();
+    }
+    public Single<List<MealSpecification>> getMealsByIngredient(String ingredient) {
+        return remoteDataSource.getMealsByIngredient(ingredient);
+    }
+    public Single<List<MealSpecification>> getMealsByCategory(String category) {
+        return remoteDataSource.getMealsByCategory(category);
+    }
+    public Single<List<MealSpecification>> getMealsByCountry(String country) {
+        return remoteDataSource.getMealsByCountry(country);
+    }
+    public Completable clearUserMeals(String userId) {
+        return localDataSource.clearUserMeals(userId)
+                .subscribeOn(Schedulers.io());
+    }
+
 }

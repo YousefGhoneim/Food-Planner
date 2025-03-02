@@ -1,4 +1,4 @@
-package com.example.footplanner;
+package com.example.footplanner.ui.splash;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.example.footplanner.R;
+import com.example.footplanner.ui.onboard.view.OnBoardingActivity;
 
 public class SplashActivity extends AppCompatActivity {
 
