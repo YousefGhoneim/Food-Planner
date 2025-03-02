@@ -16,7 +16,7 @@ import androidx.sqlite.db.SupportSQLiteOpenHelper;
 import com.example.footplanner.utilts.Converter;
 import com.example.footplanner.utilts.DateConverter;
 
-@Database(entities = {MealModel.class}, version = 6 , exportSchema = true)
+@Database(entities = {MealModel.class}, version = 11 , exportSchema = true)
 @TypeConverters({DateConverter.class, Converter.class})
 public abstract class AppDataBase extends RoomDatabase {
     private static AppDataBase instance;

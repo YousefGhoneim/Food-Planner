@@ -1,14 +1,17 @@
 package com.example.footplanner.ui.planned.view;
 
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.footplanner.R;
 import com.example.footplanner.db.MealModel;
@@ -48,7 +51,6 @@ public class PlannedFragment extends Fragment implements PlannedView {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ProductLocalDataSource localDataSource = ProductLocalDataSource.getInstance(getContext());
         presenter = new PlannedPresenter(MealRepo.getInstance(ProductLocalDataSource.getInstance(getContext()), ProductRemoteDataSource.getInstance(getContext())),this  , requireActivity());
 
         mealsByDay = new HashMap<>();
@@ -81,12 +83,21 @@ public class PlannedFragment extends Fragment implements PlannedView {
         RecyclerView recyclerView = view.findViewById(recyclerViewId);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setHasFixedSize(true);
+
+        if (adaptersByDay.get(day) == null) {
+            Log.e("DEBUG", "setupRecyclerView: Creating new adapter for " + day);
+            adaptersByDay.put(day, new PlannedAdapter(getContext(), new ArrayList<>(), presenter));
+        }
+
         recyclerView.setAdapter(adaptersByDay.get(day));
         return recyclerView;
     }
 
+
     @Override
     public void showPlannedMeals(List<MealModel> meals) {
+        Log.d("DEBUG", "Updating UI with planned meals: " + meals.size());
+
         // Clear previous data
         for (String day : mealsByDay.keySet()) {
             mealsByDay.get(day).clear();
@@ -104,7 +115,10 @@ public class PlannedFragment extends Fragment implements PlannedView {
         for (String day : adaptersByDay.keySet()) {
             adaptersByDay.get(day).notifyDataSetChanged();
         }
+
+        Log.d("DEBUG", "Planned meals updated successfully.");
     }
+
 
     private String getDayFromTimestamp(long timestamp) {
         java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("EEEE");
@@ -118,17 +132,22 @@ public class PlannedFragment extends Fragment implements PlannedView {
 
     @Override
     public void onMealDeleted() {
+        Log.d("DEBUG", "Meal deleted, reloading planned meals...");
+        Toast.makeText(getContext(), "Meal deleted successfully!", Toast.LENGTH_SHORT).show();
+
         presenter.loadPlannedMeals();
     }
 
     @Override
     public void showError(String message) {
-        // Handle errors, e.g., show a Toast
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onMealPlanned(MealModel meal, long date) {
         meal.setDate(date);
-        presenter.addPlannedMeal(meal);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            presenter.addPlannedMeal(meal);
+        }
     }
 }

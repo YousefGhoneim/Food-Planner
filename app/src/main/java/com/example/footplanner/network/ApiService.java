@@ -1,5 +1,6 @@
 package com.example.footplanner.network;
 
+import com.example.footplanner.model.CategoryResponse;
 import com.example.footplanner.model.CountryResponse;
 import com.example.footplanner.model.IngredientResponse;
 import com.example.footplanner.model.MealCategoryResponse;
@@ -17,7 +18,7 @@ import retrofit2.http.Url;
 public interface ApiService {
 
     @GET("categories.php")
-    Single<MealCategoryResponse> getMealCategories();
+    Single<CategoryResponse> getMealCategories();
 
     @GET("random.php")
     Single<MealResponse> getRandomMeal();

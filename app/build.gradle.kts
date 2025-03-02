@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.google.gms.google.services)
+    id("androidx.navigation.safeargs")
 }
 
 
@@ -43,6 +44,7 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
+    implementation(libs.firebase.database)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -76,6 +78,10 @@ dependencies {
     implementation(libs.room.rxjava3)
     annotationProcessor(libs.room.compiler)
     implementation (libs.carouselrecyclerview)
-
+    implementation (libs.circleimageview)
+    implementation (libs.firebase.firestore)
+    implementation (libs.play.services.base)
+    implementation(platform(libs.firebase.bom.v33100))
+    implementation(libs.google.firebase.firestore)
 
 }

@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_light"
+    tools:context=".ui.detailes.view.DetailedFragment">
+
+    <TextView
+        android:id="@+id/textView12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="&lt;!-- Container for the button with scrim shadow effect -->&#xA;&lt;androidx.constraintlayout.widget.ConstraintLayout&#xA;    android:id=&quot;@+id/buttonContainer&quot;&#xA;    android:layout_width=&quot;match_parent&quot;&#xA;    android:layout_height=&quot;wrap_content&quot;&#xA;    android:background=&quot;@drawable/scrim&quot;&#xA;    app:layout_constraintBottom_toBottomOf=&quot;parent&quot;&#xA;    app:layout_constraintEnd_toEndOf=&quot;parent&quot;&#xA;    app:layout_constraintStart_toStartOf=&quot;parent&quot;>&#xA;&#xA;    &lt;Button&#xA;        android:id=&quot;@+id/btnAddToPlan&quot;&#xA;        style=&quot;@style/Widget.MaterialComponents.Button.Icon&quot;&#xA;        android:layout_width=&quot;wrap_content&quot;&#xA;        android:layout_height=&quot;wrap_content&quot;&#xA;        android:layout_marginStart=&quot;20dp&quot;&#xA;        android:text=&quot;@string/addtoplan&quot;&#xA;        android:background=&quot;@drawable/button_with_frame&quot; &lt;!-- Set custom background -->&#xA;        app:layout_constraintStart_toStartOf=&quot;parent&quot;&#xA;        app:layout_constraintTop_toTopOf=&quot;parent&quot; />&#xA;&lt;/androidx.constraintlayout.widget.ConstraintLayout>&#xA;"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp"
+            app:cardBackgroundColor="#CAC7C7"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="0dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/background">
+
+                <ImageView
+                    android:id="@+id/imageMeal"
+                    android:layout_width="0dp"
+                    android:layout_height="450dp"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:srcCompat="@tools:sample/avatars" />
+
+                <!-- Favorite Floating Button (Top right inside image) -->
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fab_add_details"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:src="@drawable/bookmarkadd"
+                    android:tint="@android:color/white"
+                    app:backgroundTint="@color/material_on_primary_emphasis_medium"
+                    app:fabSize="mini"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardContent"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="-55dp"
+                    android:layout_marginEnd="15dp"
+                    app:cardBackgroundColor="#E0E7E7"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:cardMaxElevation="0dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/imageMeal">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="#FAF8F8">
+
+                        <TextView
+                            android:id="@+id/textRecipeTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:textAlignment="center"
+                            android:textColor="@color/primary"
+                            android:textSize="24sp"
+                            android:textStyle="bold"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/textView11"
+                            tools:text="Recipe Name" />
+
+                        <TextView
+                            android:id="@+id/textView11"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="15dp"
+                            android:text="Recipe Details"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/textCountry"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:textAlignment="center"
+                            android:textColor="@android:color/darker_gray"
+                            android:textSize="16sp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/textRecipeTitle"
+                            tools:text="Country" />
+
+                        <TextView
+                            android:id="@+id/textRecipeDescription"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="16dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/textCountry"
+                            tools:text="Recipe details" />
+
+                        <TextView
+                            android:id="@+id/textIngredientsLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:text="Ingredients"
+                            android:textColor="@android:color/black"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/textRecipeDescription" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerViewIngredients"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:nestedScrollingEnabled="false"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/textIngredientsLabel" />
+
+                        <TextView
+                            android:id="@+id/textStepsLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:text="Steps"
+                            android:textColor="@android:color/black"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/recyclerViewIngredients" />
+
+                        <TextView
+                            android:id="@+id/textStepsDescription"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginEnd="16dp"
+                            android:fontFamily="sans-serif-condensed"
+                            android:textSize="16dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/textStepsLabel"
+                            tools:text="Recipe steps" />
+
+                        <WebView
+                            android:id="@+id/webViewDetails"
+                            android:layout_width="match_parent"
+                            android:layout_height="200dp"
+                            android:layout_marginTop="20dp"
+                            android:layout_marginBottom="100dp"
+                            android:background="@android:color/white"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/textStepsDescription" />
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.cardview.widget.CardView>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+    </ScrollView>
+
+
+    <!-- Container for the button with scrim shadow effect -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/buttonContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/scrim"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/btnAddToPlan"
+            app:icon="@drawable/ic_add_24dp"
+
+            style="@style/Widget.MaterialComponents.Button.Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/button_with_frame"
+            android:text="Add To Plan"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

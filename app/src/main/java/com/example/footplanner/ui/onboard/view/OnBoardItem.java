@@ -1,4 +1,4 @@
-package com.example.footplanner;
+package com.example.footplanner.ui.onboard.view;
 
 public class OnBoardItem {
     private int image;

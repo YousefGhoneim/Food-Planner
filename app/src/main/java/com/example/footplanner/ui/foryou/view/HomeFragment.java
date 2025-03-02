@@ -20,6 +20,7 @@ import com.example.footplanner.db.ProductLocalDataSource;
 import com.example.footplanner.model.Meal;
 import com.example.footplanner.network.ProductRemoteDataSource;
 import com.example.footplanner.repo.MealRepo;
+import com.example.footplanner.ui.favourite.presenter.OnMealFavouriteListener;
 import com.example.footplanner.ui.foryou.presenter.HomePresenter;
 import com.example.footplanner.ui.foryou.presenter.HomeView;
 import com.example.footplanner.ui.planned.presenter.OnMealPlannedListener;
@@ -29,7 +30,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class HomeFragment extends Fragment implements HomeView , OnMealPlannedListener {
+public class HomeFragment extends Fragment implements HomeView , OnMealPlannedListener , OnMealFavouriteListener {
 
     private HomePresenter homePresenter;
     private RecipeAdapter recipeAdapter;
@@ -56,24 +57,21 @@ public class HomeFragment extends Fragment implements HomeView , OnMealPlannedLi
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         customToolbar = view.findViewById(R.id.custom_toolbar);
-        menuIcon = view.findViewById(R.id.menuIcon);
         appLogo = view.findViewById(R.id.appLogo);
         profileIcon = view.findViewById(R.id.profileIcon);
 
-        // Daily RecyclerView setup
         dailyRecyclerView = view.findViewById(R.id.dailyRecyclerView);
         dailyRecyclerView.setHasFixedSize(true);
         dailyRecyclerView.setAlpha(true);
         dailyRecyclerView.setInfinite(true);
-        dailyMealAdapter = new RecipeAdapter(getContext(), dailyMealList,this);
+        dailyMealAdapter = new RecipeAdapter(getContext(), dailyMealList,this,this);
         dailyRecyclerView.setAdapter(dailyMealAdapter);
 
-        // Recommended Meals RecyclerView setup
         recommendedMealsRecyclerView = view.findViewById(R.id.recommenddeddailyRecyclerView);
         recommendedMealsRecyclerView.setHasFixedSize(true);
         recommendedMealsRecyclerView.setAlpha(true);
         recommendedMealsRecyclerView.setInfinite(true);
-        recipeAdapter = new RecipeAdapter(getContext(), recommendedMealsList,this);
+        recipeAdapter = new RecipeAdapter(getContext(), recommendedMealsList,this ,this);
         recommendedMealsRecyclerView.setAdapter(recipeAdapter);
 
         homePresenter = new HomePresenter(
@@ -94,16 +92,19 @@ public class HomeFragment extends Fragment implements HomeView , OnMealPlannedLi
         homePresenter.getMealByDate(today);
     }
 
+
+
     @Override
-    public void showRandomMeal(MealModel meal) {
-        if (meal != null && meal.getMeal() != null) {
+    public void showRandomMeal(List<MealModel> meals) {
+        if (meals != null && !meals.isEmpty()) {
             dailyMealList.clear();
-            dailyMealList.add(meal);
+            dailyMealList.addAll(meals);
             dailyMealAdapter.notifyDataSetChanged();
         } else {
             Toast.makeText(getContext(), "No daily inspiration meal available", Toast.LENGTH_SHORT).show();
         }
     }
+
 
     @Override
     public void showRecommendedMeals(List<MealModel> meals) {
@@ -114,7 +115,17 @@ public class HomeFragment extends Fragment implements HomeView , OnMealPlannedLi
 
     @Override
     public void showError(String error) {
-        Toast.makeText(getContext(), "Error: " + error, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), error + " ", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onMealAdded() {
+        Toast.makeText(getContext(), "Meal added ", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onMealDeleted() {
+        Toast.makeText(getContext(), "Meal deleted ", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -125,10 +136,12 @@ public class HomeFragment extends Fragment implements HomeView , OnMealPlannedLi
 
     @Override
     public void onMealPlanned(Meal meal, long dateMillis) {
-        // Use the HomePresenter to save the meal to the database
-//        homePresenter.addPlannedMeal(mealModel);
-
-        // Show a success message to the user
+        homePresenter.planMeal(meal, dateMillis);
         Toast.makeText(getContext(), "Meal planned for " + new Date(dateMillis).toString(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onMealFavouriteClicked(Meal meal) {
+        homePresenter.toggleMealFavouriteStatus(meal);
     }
 }

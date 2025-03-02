@@ -1,14 +1,11 @@
-package com.example.footplanner;
+package com.example.footplanner.ui.authanticate;
 
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
-import com.google.firebase.FirebaseApp;
+import com.example.footplanner.R;
 
 public class AuthanticateActivity extends AppCompatActivity {
 
